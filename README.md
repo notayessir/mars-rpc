@@ -1,4 +1,4 @@
-English | 中文
+English | [中文](https://github.com/notayessir/mars-rpc/blob/master/README_CN.md)
 
 ## Introduction
 
@@ -73,13 +73,13 @@ public class SignInServiceImpl implements SignInService {
 @RequestMapping
 public class ConsumerController {
 
-  	// 远程引用
+  	// reference
     @RPCReference
     SignInService signInService;
 
     @GetMapping("signIn")
     public ResultBean<?> signIn(String name, String pass){
-      	// 基于接口的调用
+      	// invoke
         SignInResult signInResult = signInService.signIn(name, pass);
         if (!signInResult.isSuccess()){
             return new ResultBean<>("1001", "fail", null);
