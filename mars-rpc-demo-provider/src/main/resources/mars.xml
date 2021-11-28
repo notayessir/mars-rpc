@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mars="https://github.com/luckyMax-dev/scheme/tree/master/mars"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        https://github.com/luckyMax-dev/scheme/tree/master/mars
+        https://github.com/luckyMax-dev/scheme/tree/master/mars/mars.xsd">
+
+    <mars:provider>
+        <mars:registry registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
+        <mars:protocol protocol="MARS" host="127.0.0.1" port="5669"/>
+    </mars:provider>
+
+
+</beans>

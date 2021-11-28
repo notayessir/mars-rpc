@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="https://github.com/notayessir/scheme/tree/master/mars"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="https://github.com/notayessir/scheme/tree/master/mars"
+            elementFormDefault="qualified"
+>
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+
+    <xsd:annotation>
+        <xsd:documentation>
+            <![CDATA[ namespace support for mars-rpc framework ]]>
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:complexType name="registryConfig">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="registry" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ which registry framework ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="host" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ the registry host ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="port" type="xsd:integer" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ the registry host ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="serializeConfig">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="serialization" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ which serialize framework should use ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+
+<!--    <xsd:complexType name="loadBalanceConfig">-->
+<!--        <xsd:complexContent>-->
+<!--            <xsd:extension base="beans:identifiedType">-->
+<!--                <xsd:attribute name="loadBalance" type="xsd:string">-->
+<!--                    <xsd:annotation>-->
+<!--                        <xsd:documentation><![CDATA[ which serialize framework should use ]]></xsd:documentation>-->
+<!--                    </xsd:annotation>-->
+<!--                </xsd:attribute>-->
+<!--            </xsd:extension>-->
+<!--        </xsd:complexContent>-->
+<!--    </xsd:complexType>-->
+
+    <xsd:complexType name="providerConfig">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="protocol" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            <![CDATA[ rpc protocol which implement in this framework ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="host" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ bond host ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="port" type="xsd:integer" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ listen port ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="weight" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ the value more great, the more request dispatched to the service, default
+                                is 1 ]]>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="isExpose" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ whether should expose service to registry, default is true ]]>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="clusterConfig">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="strategy" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ cluster strategy ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="balanceStrategy" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ balance strategy ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="timeout" type="xsd:long">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ invoke timeout ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="retry" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ if fail to invoke, retry N ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="forkingNumber" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ forkingNumber ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="executorConfig" >
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="coreSize" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ ThreadPool core size ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="maximumSize" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ ThreadPool maximum size ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="queueSize" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ ThreadPool queue size ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="common">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="executor" minOccurs="0" type="executorConfig">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ The task executor config ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="provider">
+        <xsd:complexType>
+            <xsd:sequence>
+
+                <xsd:element name="registry" type="registryConfig">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ The registry config ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+                <xsd:element name="protocol" type="providerConfig">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ The registry config ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="consumer">
+        <xsd:complexType>
+            <xsd:sequence>
+
+                <xsd:element name="discovery" type="registryConfig">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ The registry config ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+                <xsd:element name="cluster" minOccurs="0" type="clusterConfig">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ The cluster config ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+                <xsd:element name="serialize" minOccurs="0" type="serializeConfig">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[ The serialize config ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+<!--                <xsd:element name="loadBalance" minOccurs="0" type="loadBalanceConfig">-->
+<!--                    <xsd:annotation>-->
+<!--                        <xsd:documentation><![CDATA[ The serialize config ]]></xsd:documentation>-->
+<!--                    </xsd:annotation>-->
+<!--                </xsd:element>-->
+
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
