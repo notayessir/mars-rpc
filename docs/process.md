@@ -15,7 +15,7 @@
 
 下图简单描述了 mars-rpc 的启动流程：
 
-![init](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/image/init.jpeg)
+![init](https://github.com/notayessir/mars-rpc/blob/master/docs/image/init.jpeg)
 
 ### 调用流程
 
@@ -39,4 +39,4 @@
 
 下图简单描述调用过程：
 
-![invoke](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/image/invoke.jpeg)
+![invoke](https://github.com/notayessir/mars-rpc/blob/master/docs/image/invoke.jpeg)

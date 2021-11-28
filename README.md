@@ -1,51 +1,53 @@
-## 介绍
+English | 中文
 
-使用 Netty 与 Spring 实现的简易轻量级 RPC 框架，可以方便的在基于 Spring Boot 的项目上使用。
+## Introduction
 
-该项目参考 dubbo 2.x 版本的部分设计细节实现。
+Lightweight RPC framework base on Netty and Spring, it's convenient to access in project base on Spring Boot.
 
-## 用法
+Some details implemented with reference to Dubbo 2.x version. 
 
-1）启动注册中心，该框架目前使用 ZooKeeper，使用该框架前应先启动 ZooKeeper
+## Usage
 
-2）在 maven 中引入框架（暂未发布到 maven central，需在本地使用 maven 打包）
+1\) start zookeeper, project only support zookeeper as registry for now;
+
+2\) import mars-rpc-core package, the package is not published on maven, should package in local maven environment;
 
 ```
 <dependency>
-		<groupId>com.github.luckyMax</groupId>
+		<groupId>com.notayessir</groupId>
 		<artifactId>mars-rpc-core</artifactId>
 		<version>0.0.1</version>
 </dependency>
 ```
 
-3）编写 mars.xml
+3\) config mars.xml
 
-3.1）服务提供者加入如下配置：
+3.1\) service provider :
 
 ```
 <mars:provider>
-		<!--  注册中心端口 -->
+		<!--  registry -->
     <mars:registry registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
-    <!--  Netty 服务器暴露的 ip 与端口 -->
+    <!--  netty server -->
     <mars:protocol protocol="MARS" host="127.0.0.1" port="5669"/>
 </mars:provider>
 ```
 
-3.2）服务消费者加入如下配置：
+3.2\) service consumer :
 
 ```
 <mars:consumer>
-		<!--  注册中心端口 -->
+		<!--  registry -->
     <mars:discovery registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
 </mars:consumer>
 ```
 
-4）使用注解（目前只支持注解式使用）
+4\) using annotation
 
-4.1）在 Application.java 中使用 @EnableMars 来允许扫描框架组件：
+4.1\) annotate with @EnableMars in Application.java to scan the package conponent :
 
 ```java
-@EnableMars		// 允许扫描 RPC 组件
+@EnableMars		// RPC scan
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
@@ -54,17 +56,17 @@ public class Application {
 }
 ```
 
-4.2）服务提供者在 Spring 管理的 bean 上暴露服务：
+4.2\) service provider expose the service base on spring bean :
 
 ```java
-@RPCService(rpcInterface = SignInService.class)		// 声明接口并暴露该服务
+@RPCService(rpcInterface = SignInService.class)		// expose service
 @Service
 public class SignInServiceImpl implements SignInService {
     // ....
 }
 ```
 
-4.3）服务消费者在 Spring 管理的 bean 中引用服务（例如 controller、service、component），并调用：
+4.3\) consumer refer the service and invoke the method in controller, service, conponent etc... managed by spring bean :
 
 ```java
 @RestController
@@ -87,13 +89,13 @@ public class ConsumerController {
 }
 ```
 
-## 待做
+## Todo
 
-- [ ] 基于 ProtoBuf、Avro 的序列化框架
-- [ ] 基于 etcd、Redis 的注册中心
-- [ ] 基准测试
+- [ ] Integrated ProtoBuf、Avro serial framework
+- [ ] Integrated etcd、Redis as registry
+- [ ] Benchmark
 
-## 参考文档
+## Reference
 
 1. [API 说明](https://github.com/notayessir/mars-rpc/blob/master/docs/API.md)
 2. [mars.xml 配置说明](https://github.com/notayessir/mars-rpc/blob/master/docs/mars.xml.md)

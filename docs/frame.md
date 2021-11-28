@@ -2,7 +2,7 @@
 
 mars-rpc 的数据帧主要分为 2 个部分，即数据头部与数据主体，头部定义了如唯一 id、序列化 id、数据长度等信息，一个完整的数据帧结构如图所示：
 
-![frame](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/image/frame.jpeg)
+![frame](https://github.com/notayessir/mars-rpc/blob/master/docs/image/frame.jpeg)
 
 下面介绍各个头部字段含义。
 

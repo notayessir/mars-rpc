@@ -1,10 +1,10 @@
 package com.notayessir.controller;
 
 
-import com.github.luckyMax.bean.ResultBean;
-import com.github.luckyMax.bean.SignInResult;
+import com.notayessir.bean.ResultBean;
+import com.notayessir.bean.SignInResult;
 import com.notayessir.rpc.api.annotation.RPCReference;
-import com.github.luckyMax.service.SignInService;
+import com.notayessir.service.SignInService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

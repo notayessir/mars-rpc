@@ -3,7 +3,6 @@ package com.notayessir.service;
 
 import com.notayessir.bean.SignInResult;
 import com.notayessir.rpc.api.annotation.RPCService;
-import com.notayessir.service.SignInService;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

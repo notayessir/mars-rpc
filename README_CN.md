@@ -1,3 +1,5 @@
+English | 中文
+
 ## 介绍
 
 使用 Netty 与 Spring 实现的简易轻量级 RPC 框架，可以方便的在基于 Spring Boot 的项目上使用。
@@ -12,7 +14,7 @@
 
 ```
 <dependency>
-		<groupId>com.github.luckyMax</groupId>
+		<groupId>com.notayessir</groupId>
 		<artifactId>mars-rpc-core</artifactId>
 		<version>0.0.1</version>
 </dependency>
@@ -89,15 +91,15 @@ public class ConsumerController {
 
 ## 待做
 
-- [ ] 基于 ProtoBuf、Avro 的序列化框架
-- [ ] 基于 etcd、Redis 的注册中心
+- [ ] 集成 ProtoBuf、Avro 的序列化框架
+- [ ] 集成 etcd、Redis 的注册中心
 - [ ] 基准测试
 
 ## 参考文档
 
-1. [API 说明](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/API.md)
-2. [mars.xml 配置说明](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/mars.xml.md)
-3. [第三方组件](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/component.md)
-4. [调用流程](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/process.md)
-5. [帧设计](https://github.com/luckyMax-dev/mars-rpc/blob/master/docs/frame.md)
+1. [API 说明](https://github.com/notayessir/mars-rpc/blob/master/docs/API.md)
+2. [mars.xml 配置说明](https://github.com/notayessir/mars-rpc/blob/master/docs/mars.xml.md)
+3. [第三方组件](https://github.com/notayessir/mars-rpc/blob/master/docs/component.md)
+4. [调用流程](https://github.com/notayessir/mars-rpc/blob/master/docs/process.md)
+5. [帧设计](https://github.com/notayessir/mars-rpc/blob/master/docs/frame.md)
 

@@ -30,12 +30,12 @@ Netty 服务器监听的端口，该标签下有 2 个属性：
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mars="https://github.com/luckyMax-dev/scheme/tree/master/mars"
+       xmlns:mars="https://github.com/notayessir/scheme/tree/master/mars"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd
-        https://github.com/luckyMax-dev/scheme/tree/master/mars
-        https://github.com/luckyMax-dev/scheme/tree/master/mars/mars.xsd">
+        https://github.com/notayessir/scheme/tree/master/mars
+        https://github.com/notayessir/scheme/tree/master/mars/mars.xsd">
 
     <mars:provider>
         <mars:registry registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
@@ -81,12 +81,12 @@ Netty 服务器监听的端口，该标签下有 2 个属性：
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mars="https://github.com/luckyMax-dev/scheme/tree/master/mars"
+       xmlns:mars="https://github.com/notayessir/scheme/tree/master/mars"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd
-        https://github.com/luckyMax-dev/scheme/tree/master/mars
-        https://github.com/luckyMax-dev/scheme/tree/master/mars/mars.xsd">
+        https://github.com/notayessir/scheme/tree/master/mars
+        https://github.com/notayessir/scheme/tree/master/mars/mars.xsd">
     
     <mars:consumer>
         <mars:discovery registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
@@ -117,12 +117,12 @@ Netty 服务器监听的端口，该标签下有 2 个属性：
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mars="https://github.com/luckyMax-dev/scheme/tree/master/mars"
+       xmlns:mars="https://github.com/notayessir/scheme/tree/master/mars"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd
-        https://github.com/luckyMax-dev/scheme/tree/master/mars
-        https://github.com/luckyMax-dev/scheme/tree/master/mars/mars.xsd">
+        https://github.com/notayessir/scheme/tree/master/mars
+        https://github.com/notayessir/scheme/tree/master/mars/mars.xsd">
   
     <!-- 省略服务消费者活服务提供者配置 -->
 
