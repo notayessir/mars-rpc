@@ -1,4 +1,4 @@
-English | [中文](https://github.com/notayessir/mars-rpc/blob/master/README_CN.md)
+English | [中文](https://github.com/notayessir/mars-rpc/blob/master/README.md)
 
 ## Introduction
 
