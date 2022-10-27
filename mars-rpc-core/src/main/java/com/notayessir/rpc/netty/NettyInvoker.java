@@ -52,6 +52,7 @@ public class NettyInvoker implements Invoker {
      * 调用前准备逻辑
      */
     private void beforeInvoke() {
+        // 统计正在进行调用的任务数 +1，当前用于给负载均衡组件 LeastActiveLoadBalance 收集信息
         ProcessCounter statistic = ProcessCounterManager.get(nettyClient.getChannelId());
         statistic.incrProcessingCount();
     }
@@ -61,6 +62,7 @@ public class NettyInvoker implements Invoker {
      * 调用后逻辑
      */
     private void afterInvoke(){
+        // 统计正在进行调用的任务数 -1，当前用于给负载均衡组件 LeastActiveLoadBalance 收集信息
         ProcessCounter statistic = ProcessCounterManager.get(nettyClient.getChannelId());
         statistic.decrProcessingCount();
     }
@@ -72,21 +74,24 @@ public class NettyInvoker implements Invoker {
             throw new RPCException(RPCException.Message.CLIENT_UNAVAILABLE_INVOKER);
         }
         beforeInvoke();
+
+        // 封装请求帧、FutureTask
         RequestFrame requestFrame = InvocationUtil.toRequestFrame(invocation);
         RequestTask requestTask = new RequestTask(requestFrame, nettyClient);
         FutureTask<Void> future = new FutureTask<>(requestTask);
         FutureRespPublisher publisher = MarsRPCContext.getBean(FutureRespPublisher.class);
+        // 发布请求事件
         publisher.publishCreateEvent(nettyClient.getChannelId(), invocation, requestTask.getLatch());
         try {
+            // 提交 FutureTask 任务，并阻塞等待结果（设置超时）
             MarsRPCContext.getTaskExecutor().submit(future);
             future.get(invocation.getClusterMeta().getTimeout(), TimeUnit.MILLISECONDS);
             // channel 可能会因为 decode 异常提前释放，需要防止 NPE
             FutureResponse response = MarsRPCContext.getBean(FutureRespNotifier.class).getResponse(nettyClient.getChannelId(), requestFrame.getRequestId());
-            Object object = InvocationUtil.toResponseObject(response);
-            publisher.publishRemoveEvent(nettyClient.getChannelId(), invocation.getRequestId());
-            return object;
+            return InvocationUtil.toResponseObject(response);
         } catch (Throwable e){
             LOG.error("exception happened when get result from requestTask, requestId:{}", requestFrame.getRequestId(), e);
+            // 调用失败出现异常时，需要释放相关资源，避免无效的实例对象占用内存，造成 OOM
             publisher.publishReleaseEvent(nettyClient.getChannelId(), invocation.getRequestId());
             if (e instanceof RejectedExecutionException){
                 throw new RPCException(RPCException.Message.CLIENT_THREAD_POOL_BUSY);
@@ -99,6 +104,8 @@ public class NettyInvoker implements Invoker {
             }
             throw new RPCException(RPCException.Message.UN_CLASSIFY_EXCEPTION.getCode(), e.toString());
         } finally {
+            // 释放资源
+            publisher.publishRemoveEvent(nettyClient.getChannelId(), invocation.getRequestId());
             afterInvoke();
         }
     }

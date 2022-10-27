@@ -21,11 +21,9 @@ public class TaskExecutor {
      */
     private final ExecutorService executor;
 
-    private final ArrayBlockingQueue<Runnable> queue;
-
 
     public TaskExecutor(ExecutorConfig executorConfig) {
-        queue = new ArrayBlockingQueue<>(executorConfig.getQueueSize());
+        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(executorConfig.getQueueSize());
         executor = new ThreadPoolExecutor(executorConfig.getCoreSize(), executorConfig.getMaximumSize(), 30L,
                 TimeUnit.SECONDS, queue, new RejectedHandler());
     }

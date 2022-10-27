@@ -36,6 +36,7 @@ public class ZKDiscovery implements Discovery {
     public List<ServiceUnit> discover(List<String> interfaceNames) {
         List<ServiceUnit> list = new ArrayList<>(interfaceNames.size());
         for (String interfaceName : interfaceNames) {
+            // 获取某个接口的所有服务提供者信息
             String path = RegistryConst.PATH_ROOT + RegistryConst.PATH_SLASH + interfaceName + RegistryConst.PROVIDERS;
             List<String> providers;
             try {

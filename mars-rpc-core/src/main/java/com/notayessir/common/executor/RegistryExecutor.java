@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class RegistryExecutor {
 
     private final static ExecutorService executor = new ThreadPoolExecutor(1, 1, 30L,
-            TimeUnit.SECONDS, new ArrayBlockingQueue<>(256), new ThreadPoolExecutor.AbortPolicy());
+            TimeUnit.SECONDS, new ArrayBlockingQueue<>(1024), new ThreadPoolExecutor.AbortPolicy());
 
 
     public static ExecutorService getExecutor() {

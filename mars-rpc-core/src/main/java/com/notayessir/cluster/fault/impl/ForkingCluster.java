@@ -31,10 +31,12 @@ public class ForkingCluster extends Cluster {
         invokers = selectAvailable(invokers);
         final List<Invoker> selected;
         int forkingNumber = invocation.getClusterMeta().getForkingNumber();
+        // 如果 forkingNumber 填错，修正一下
         if (forkingNumber <=0 || forkingNumber >= invokers.size()){
             selected = invokers;
         }else {
             selected = new ArrayList<>(forkingNumber);
+            // TODO 这里可能会选到重复的，导致实际执行的 invoker 数量与 forkingNumber 不相等，应该引入记录功能 ？
             for (int i = 0; i < forkingNumber; i++) {
                 Invoker invoker = loadBalance.balance(invokers, invocation);
                 if (!selected.contains(invoker)){
@@ -46,20 +48,22 @@ public class ForkingCluster extends Cluster {
         final AtomicInteger counter = new AtomicInteger();
         final BlockingQueue<Object> resultQueue = new LinkedBlockingQueue<>();
         for (Invoker invoker : selected) {
+            // TODO 受共享线程池限制，可能需要等待线程资源而进入等待队列
             TaskExecutor executor = MarsRPCContext.getTaskExecutor();
             executor.submit(() ->{
                 try {
                     Object result = invoker.invoke(invocation);
-                    resultQueue.offer(result);
+                    resultQueue.add(result);
                 } catch (Throwable e) {
                     int value = counter.incrementAndGet();
                     if (value >= selected.size()) {
-                        resultQueue.offer(e);
+                        resultQueue.add(e);
                     }
                 }
             });
         }
         try {
+            // 阻塞等待队列结果，若有结果即刻返回，其他线程调用结果忽略
             Object result = resultQueue.poll(invocation.getClusterMeta().getTimeout(), TimeUnit.MILLISECONDS);
             if (result instanceof Throwable) {
                 throw (RPCException) result;

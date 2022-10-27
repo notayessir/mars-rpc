@@ -28,6 +28,7 @@ public class FailoverCluster extends Cluster {
                 if (e.isBusiness()) {
                     throw e;
                 }
+                // TODO 应该移除有问题的 invoker，防止下次负载均衡时再次选到相同的 invoker ？
             }
         }
         throw new RPCException(RPCException.Message.CLIENT_FAILOVER_CLUSTER_FAIL);

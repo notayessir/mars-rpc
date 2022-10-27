@@ -58,7 +58,7 @@ public class ConsumerStartup implements Startup {
         // 创建连接
         Connector connector = new NettyConnector();
         List<Invoker> invokers = connector.connect(connectionMetas);
-        // 创建并设置连接管理器
+        // 创建并设置连接管理器，相当于句柄管理器
         MarsRPCContext.setInvokerService(new InvokerManager(invokers));
         // 监听服务提供者上下线信息
         discovery.watch(interfaceNames);
@@ -67,7 +67,7 @@ public class ConsumerStartup implements Startup {
     }
 
     /**
-     * 根据 ip 和端口合并多个服务，为后续创建连接去重
+     * 根据 ip 和端口合并多个服务，为后续创建连接去重，即某个 ip+port 提供了什么服务
      * @param serviceUnits      从注册中心获取下来的服务信息
      * @return                  去重后的待连接信息
      */
@@ -86,6 +86,7 @@ public class ConsumerStartup implements Startup {
                 map.put(key, list);
             }
         }
+        // 以列表的形式返回
         List<ConnectionMeta> connectionMetas = new ArrayList<>(map.size());
         for (Map.Entry<String, List<Service>> entry : map.entrySet()) {
             String[] hostPort = entry.getKey().split(":");

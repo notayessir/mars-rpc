@@ -44,6 +44,7 @@ public class ProviderStartup implements Startup {
         Server server = new NettyServer(protocolConfig.getPort());
         CountDownLatch prepareLatch = new CountDownLatch(1);
         new Thread(() -> server.start(prepareLatch)).start();
+        // netty 服务器启动完成之前，阻塞在这
         prepareLatch.await();
         MarsRPCContext.setServer(server);
         // 根据设置决定是否将服务注册到注册中心

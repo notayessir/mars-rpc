@@ -23,6 +23,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
+        // 服务端 10 秒内没有读写请求，就开始心跳，因为客户端设置了 5 秒，所以服务端一般不会主动发起心跳
         pipeline.addLast(new IdleStateHandler(0, 0, 10, TimeUnit.SECONDS));
         pipeline.addLast("codecEncoder", new FrameEncoder());
         pipeline.addLast("codecDecoder", new FrameDecoder());

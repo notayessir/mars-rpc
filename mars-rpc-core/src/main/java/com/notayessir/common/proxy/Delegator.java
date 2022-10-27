@@ -16,8 +16,17 @@ public class Delegator {
         this.reference = reference;
     }
 
-
+    /**
+     * 执行方法的远程调用
+     * @param proxy    调用的类
+     * @param method    调用的方法
+     * @param args      参数
+     * @param reference 服务引用者信息
+     * @return          调用结果
+     * @throws Throwable    无法执行方法调用时抛出
+     */
     protected Object invoke(Object proxy, Method method, Object[] args, Reference reference) throws Throwable{
+        // 有几个方法只执行本地调用
         LocalMethod localMethod = LocalMethod.getByMethodName(method.getName());
         if (Objects.isNull(localMethod)) {
             return ReqDispatcher.dispatch(method, args, reference);

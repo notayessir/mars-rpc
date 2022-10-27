@@ -14,9 +14,13 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 仿 Nginx 的加权轮询
+ * 仿 Nginx 的加权轮询.
+ * 比如有权重分别为 2，3，4 的三个 invoker a，b，c，
+ * 进行 9 次调用，调用的顺序是 cba，cbc，abc，
+ * 即 a 进行了 2 次调用，b 进行 3 次调用，c 进行 4 次调用
  */
 @Component(value = "ROUND_ROBIN")
 @Lazy
@@ -29,20 +33,23 @@ public class RoundRobinLoadBalance implements LoadBalance {
 
     private final AtomicBoolean updateLock = new AtomicBoolean();
 
-
     @Override
     public Invoker balance(List<Invoker> invokerList, Invocation invocation) {
         if (invokerList.size() == 1){
             return invokerList.get(0);
         }
 
+        // 通过哈希码判断 invoker 列表是否有变化
         if (identityHashCode != invokerList.hashCode()){
+            // 借助 CAS 清除相关记录
             if (updateLock.compareAndSet(false, true)){
-                map.clear();
                 identityHashCode = invokerList.hashCode();
+                map.clear();
                 updateLock.set(false);
             }
-            return MarsRPCContext.getLoadBalance(Strategy.RANDOM.name()).balance(invokerList, invocation);
+            // invoker 列表变动期间，均使用随机负载均衡调用
+            return MarsRPCContext.getLoadBalance(Strategy.RANDOM.name())
+                    .balance(invokerList, invocation);
         }
 
         int totalWeight = 0;
@@ -55,8 +62,8 @@ public class RoundRobinLoadBalance implements LoadBalance {
             String key = invokerMeta.getHost()  + ":" + invokerMeta.getPort();
             WeightedRoundRobin roundRobin = map.get(key);
             if (Objects.isNull(roundRobin)){
-                map.putIfAbsent(key, new WeightedRoundRobin(weight));
-                roundRobin = map.get(key);
+                roundRobin = new WeightedRoundRobin(weight);
+                map.putIfAbsent(key, roundRobin);
             }
             int currentWeight = roundRobin.increaseCurrentWeight();
             if (currentWeight > maxCurrentWeight){
@@ -70,7 +77,8 @@ public class RoundRobinLoadBalance implements LoadBalance {
             selectedWRR.setCurrentWeight(totalWeight);
             return selectedInvoker;
         }
-        return MarsRPCContext.getLoadBalance(Strategy.RANDOM.name()).balance(invokerList, invocation);
+        return MarsRPCContext.getLoadBalance(Strategy.RANDOM.name())
+                .balance(invokerList, invocation);
     }
 
     static class WeightedRoundRobin {
@@ -87,6 +95,7 @@ public class RoundRobinLoadBalance implements LoadBalance {
         public int increaseCurrentWeight() {
             return currentWeight.addAndGet(weight);
         }
+
         public void setCurrentWeight(int total) {
             currentWeight.addAndGet(-1 * total);
         }

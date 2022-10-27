@@ -31,6 +31,7 @@ public class InvokerManager {
     private final List<Invoker> invokers;
 
     public InvokerManager(List<Invoker> invokers) {
+        // 使用 CopyOnWriteArrayList 的理由是，当服务提供者发生变化时，需要增/删该列表，为了不影响正常的调用，就使用它
         this.invokers = new CopyOnWriteArrayList<>();
         this.invokers.addAll(invokers);
     }

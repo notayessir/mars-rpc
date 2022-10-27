@@ -18,10 +18,12 @@ public class JDKProxy implements Proxy {
     public void gen(ReferenceCache referenceCache) throws Exception {
         for (List<Reference> references : referenceCache.getReferenceMap().values()){
             for (Reference reference : references) {
+                // 获取 RPCReference 标注的字段
                 Field field = reference.getField();
                 field.setAccessible(true);
                 Object proxyInstance = java.lang.reflect.Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                         new Class[]{field.getType()}, new JDKDelegator(reference));
+                // 设置代理类，这个方法的意思是，给这个 bean 的 field 赋值
                 field.set(reference.getBean(), proxyInstance);
             }
         }

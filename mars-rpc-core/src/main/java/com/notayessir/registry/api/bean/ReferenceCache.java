@@ -29,6 +29,10 @@ public class ReferenceCache {
         return references;
     }
 
+    /**
+     * 获取服务消费者所需要的所有服务接口名
+     * @return  接口名列表
+     */
     public List<String> getInterfaceNames(){
         List<String> interfaceNames = new ArrayList<>(referMap.size());
         Collection<List<Reference>> referInfoListColl = referMap.values();
@@ -38,7 +42,12 @@ public class ReferenceCache {
         return interfaceNames;
     }
 
+    /**
+     * 将 Reference 按照服务名称分类，放入 map 中
+     * @param references    RPC 字段（服务）信息
+     */
     public void putReferences(List<Reference> references){
+        // 使用 RPC 字段类名分类
         for (Reference reference : references){
             String referName = reference.getField().getType().getName();
             if (referMap.containsKey(referName)){

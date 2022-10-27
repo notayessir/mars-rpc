@@ -38,6 +38,7 @@ public class ConsistentHashLoadBalance implements LoadBalance {
         String interfaceKey = invocation.getMethod().getDeclaringClass().getName();
         ConsistentHashSelector selector = selectors.get(interfaceKey);
         int hashCode = invokerList.hashCode();
+        // TODO 当 invokerList 发生变更时（服务上下线），会返回新的列表，identityHashCode 因此改变，所以缓存无法命中而进入这段逻辑的可能性较大
         if (Objects.isNull(selector) || selector.identityHashCode != hashCode) {
             selectors.put(interfaceKey, new ConsistentHashSelector(invokerList));
             selector = selectors.get(interfaceKey);
@@ -54,12 +55,12 @@ public class ConsistentHashLoadBalance implements LoadBalance {
         private final TreeMap<Long, Invoker> virtualInvokers;
 
         /**
-         * 根据服务提供者生成的 hashcode，为了简化逻辑，当改值变化时，重新创建实例
+         * 根据服务提供者生成的 hashcode，为了简化逻辑，当该值变化时，重新哈希
          */
         private final int identityHashCode;
 
         /**
-         * 参与 hash 的参数索引
+         * 指明调用的方法参数中，哪几个参数参与 hash 的参数索引，目前就设置使用第 1 个
          */
         private final int[] argumentIndex = new int[]{0};
 
@@ -67,6 +68,7 @@ public class ConsistentHashLoadBalance implements LoadBalance {
         public ConsistentHashSelector(List<Invoker> invokerList) {
             virtualInvokers = new TreeMap<>();
             identityHashCode = invokerList.hashCode();
+            // 将一个 invoker 根据散列值散列为 160 个虚拟节点
             for (Invoker invoker : invokerList) {
                 String address = invoker.getInvokerMeta().getHost() + ":" + invoker.getInvokerMeta().getPort();
                 int replicaNumber = 160;
@@ -80,6 +82,11 @@ public class ConsistentHashLoadBalance implements LoadBalance {
             }
         }
 
+        /**
+         * 将请求参数散列之后，选取哈希环上的某个 invoker
+         * @param invocation    调用信息
+         * @return              invoker 调用句柄
+         */
         public Invoker select(Invocation invocation) {
             String key = toKey(invocation.getArgs());
             byte[] digest = md5(key);
@@ -87,10 +94,11 @@ public class ConsistentHashLoadBalance implements LoadBalance {
         }
 
         private String toKey(Object[] args) {
+            // 如果参数是对象，需要重写 toString 方法，这样得到的 key 才会与参数的改变而改变
             StringBuilder buf = new StringBuilder();
             for (int i : argumentIndex) {
                 if (i >= 0 && i < args.length) {
-                    buf.append(args[i]);
+                    buf.append(args[i]); // toString
                 }
             }
             return buf.toString();
@@ -105,7 +113,7 @@ public class ConsistentHashLoadBalance implements LoadBalance {
         }
 
         /**
-         * KETAMA_HASH
+         * KETAMA HASH { @link https://github.com/RJ/ketama }
          */
         private long hash(byte[] digest, int number) {
             return (((long) (digest[3 + number * 4] & 0xFF) << 24)

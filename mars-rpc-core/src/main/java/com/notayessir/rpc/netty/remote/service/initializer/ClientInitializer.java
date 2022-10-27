@@ -23,6 +23,7 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
+        // 客户端 5 秒内没有读写请求，就开始心跳
         pipeline.addLast(new IdleStateHandler(0, 0, 5, TimeUnit.SECONDS));
         pipeline.addLast("codecEncoder", new FrameEncoder());
         pipeline.addLast("codecDecoder", new FrameDecoder());

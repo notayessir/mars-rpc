@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * RPC 特定注解检测，依赖 Spring 监听器，对每个注册在 Spring 容器中的 bean 进行检测
  */
-@Order(value = 10)
+@Order(value = 10)  // 值越小优先级越高，优先执行
 @Component
 public class RPCDetectListener implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -36,6 +36,7 @@ public class RPCDetectListener implements ApplicationListener<ContextRefreshedEv
         if (providerConfig.isConfig()){
             for (String beanName: beanNames){
                 Object bean = applicationContext.getBean(beanName);
+                // 扫描 Spring 管理的 bean，将需要暴露的服务筛选出来
                 Service service = RPCDetectUtil.serviceDetect(bean, providerConfig.getProtocolConfig());
                 if (!Objects.isNull(service)){
                     ServiceCache serviceCache = MarsRPCContext.getServiceCache();
@@ -48,7 +49,9 @@ public class RPCDetectListener implements ApplicationListener<ContextRefreshedEv
         ConsumerConfig consumerConfig = MarsRPCContext.getConsumerConfig();
         if (consumerConfig.isConfig()){
             for (String beanName: beanNames){
+                // 扫描 Spring 管理的 bean，将需要引用的服务筛选出来
                 Object bean = applicationContext.getBean(beanName);
+                // bean 里的每个 RPC 字段（即服务）用一个 Reference 表示
                 ArrayList<Reference> references = RPCDetectUtil.referenceDetect(bean, consumerConfig.getClusterConfig());
                 if (!references.isEmpty()){
                     ReferenceCache referenceCache = MarsRPCContext.getReferenceCache();

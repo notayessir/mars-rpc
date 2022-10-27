@@ -22,6 +22,7 @@ public class ServiceCache {
     public void addService(Service service){
         boolean exist = false;
         for (Service s : services){
+            // 一个接口可能有多个实现，当遇到相同的接口实现时，只更新具体实现类
             if (StringUtils.equalsIgnoreCase(s.getInterfaceName(), service.getInterfaceName())){
                 s.getServiceNames().addAll(service.getServiceNames());
                 exist = true;

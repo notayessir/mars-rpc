@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 /**
  * RPC 启动入口，依赖 Spring 监听器，对服务消费者、提供者进行初始化
  */
-@Order(value = 20)
+@Order(value = 20)  // 值越小优先级越高，优先执行
 @Component
 public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -32,6 +32,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
         // 初始化服务提供者
         ProviderConfig providerConfig = MarsRPCContext.getProviderConfig();
         if (providerConfig.isConfig()){
+            // 将 RPCDetectListener 扫描出来的服务提供者，启动 netty 并注册到注册中心
             ServiceCache serviceCache = MarsRPCContext.getServiceCache();
             Startup exposeStartup = new ProviderStartup(serviceCache, providerConfig);
             try {
@@ -46,6 +47,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
         // 初始化服务消费者
         ConsumerConfig consumerConfig = MarsRPCContext.getConsumerConfig();
         if (consumerConfig.isConfig()){
+            // 为 RPCDetectListener 扫描出来的服务消费者，拉取注册中心中的提供者信息并使用动态代理技术生成代理
             ReferenceCache referenceCache = MarsRPCContext.getReferenceCache();
             Startup referStartup = new ConsumerStartup(referenceCache, consumerConfig);
             try {

@@ -67,6 +67,7 @@ public class ResponseTask implements Callable<ResponseFrame> {
     private Object doInvoke(RequestBody requestBody) throws Throwable {
         Class<?>[] clazzArr = null;
         Object[] argClassInstanceArr = null;
+        // 拿到参数类型与参数值
         List<String> paramNames = requestBody.getParamNames();
         List<Object> paramValues = requestBody.getParamValues();
         if (!Objects.isNull(paramNames) && !paramNames.isEmpty()){
@@ -77,6 +78,7 @@ public class ResponseTask implements Callable<ResponseFrame> {
                 argClassInstanceArr[j] = JSONObject.parseObject(JSONObject.toJSONString(paramValues.get(j)), clazzArr[j]);
             }
         }
+        // 借助反射进行调用，如果有船服务名，则根据服务名获取 bean，若没有设置，则尝试用接口名获取 bean
         Object bean;
         if (StringUtils.isNotBlank(requestBody.getServiceName())){
             bean = MarsRPCContext.getBean(requestBody.getServiceName());
@@ -84,6 +86,7 @@ public class ResponseTask implements Callable<ResponseFrame> {
             Class<?> serviceClz = Class.forName(requestBody.getInterfaceName());
             bean = MarsRPCContext.getBean(serviceClz);
         }
+        // 使用反射获取该服务的方法，传参数调用
         Class<?> beanClass = bean.getClass();
         Method method = beanClass.getMethod(requestBody.getMethodName(), clazzArr);
         return method.invoke(bean, argClassInstanceArr);
