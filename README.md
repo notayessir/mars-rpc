@@ -2,7 +2,7 @@
 
 ## 介绍
 
-使用 Netty 与 Spring 实现的简易轻量级 RPC 框架，可以方便的在基于 Spring Boot 的项目上使用。
+使用 Netty、Spring、ZooKeeper 实现简易轻量级 RPC 框架，可以方便的在基于 Spring Boot 的项目上使用。
 
 该项目参考 dubbo 2.x 版本的部分设计细节实现。
 
@@ -14,9 +14,9 @@
 
 ```
 <dependency>
-		<groupId>com.notayessir</groupId>
-		<artifactId>mars-rpc-core</artifactId>
-		<version>0.0.1</version>
+	<groupId>com.notayessir</groupId>
+	<artifactId>mars-rpc-core</artifactId>
+	<version>0.0.1</version>
 </dependency>
 ```
 
@@ -26,7 +26,7 @@
 
 ```
 <mars:provider>
-		<!--  注册中心端口 -->
+    <!--  注册中心端口 -->
     <mars:registry registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
     <!--  Netty 服务器暴露的 ip 与端口 -->
     <mars:protocol protocol="MARS" host="127.0.0.1" port="5669"/>
@@ -37,7 +37,7 @@
 
 ```
 <mars:consumer>
-		<!--  注册中心端口 -->
+	<!--  注册中心端口 -->
     <mars:discovery registry="ZOOKEEPER" host="127.0.0.1" port="2181"/>
 </mars:consumer>
 ```
@@ -47,7 +47,8 @@
 4.1）在 Application.java 中使用 @EnableMars 来允许扫描框架组件：
 
 ```java
-@EnableMars		// 允许扫描 RPC 组件
+// 允许扫描 RPC 组件
+@EnableMars
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
@@ -59,7 +60,8 @@ public class Application {
 4.2）服务提供者在 Spring 管理的 bean 上暴露服务：
 
 ```java
-@RPCService(rpcInterface = SignInService.class)		// 声明接口并暴露该服务
+// 声明接口并暴露该服务
+@RPCService(rpcInterface = SignInService.class)
 @Service
 public class SignInServiceImpl implements SignInService {
     // ....
@@ -73,13 +75,13 @@ public class SignInServiceImpl implements SignInService {
 @RequestMapping
 public class ConsumerController {
 
-  	// 远程引用
+    // 远程引用
     @RPCReference
     SignInService signInService;
 
     @GetMapping("signIn")
     public ResultBean<?> signIn(String name, String pass){
-      	// 基于接口的调用
+        // 调用方法
         SignInResult signInResult = signInService.signIn(name, pass);
         if (!signInResult.isSuccess()){
             return new ResultBean<>("1001", "fail", null);
